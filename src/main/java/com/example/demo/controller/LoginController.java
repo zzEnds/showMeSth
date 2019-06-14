@@ -1,20 +1,23 @@
 package com.example.demo.controller;
 
-import com.example.demo.Entity.UserEntity;
-import com.sun.tracing.dtrace.ModuleAttributes;
+import com.example.demo.entity.UserEntity;
+import com.example.demo.service.IUserService;
+import com.example.demo.serviceImpl.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class Login {
+public class LoginController {
 
-    private Logger logger = LoggerFactory.getLogger(Login.class);
+    private Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+    @Autowired
+    private IUserService service;
 
     @RequestMapping("/index")
     public String index() {
@@ -34,10 +37,13 @@ public class Login {
     public String login(@ModelAttribute UserEntity userEntity) {
 
         logger.info("username=" + userEntity.getUsername() + ",password=" + userEntity.getPassword());
-        if(StringUtils.isEmpty(userEntity.getUsername())) {
-            return "error";
-        } else {
+
+        UserEntity user = service.login(userEntity);
+
+        if(null != user) {
             return "main";
+        } else {
+            return "error";
         }
 
     }
