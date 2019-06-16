@@ -8,10 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
+@CrossOrigin(origins = "http://127.0.0.1:18080")
+@RequestMapping("/agent")
 public class LoginController {
 
     private Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -24,19 +27,23 @@ public class LoginController {
         return "index";
     }
 
-//    @RequestMapping("/simpleLogin")
-//    public String simpleLogin(@RequestParam("username") String username,
-//                        @RequestParam("password") String password) {
-//
-//        logger.info("username="+ username + ",password=" + password);
-//        return "main";
-//
-//    }
+    @RequestMapping(value = "/simpleLogin", method = RequestMethod.POST)
+    public String simpleLogin(@RequestParam("username") String username,
+                        @RequestParam("password") String password) {
 
-    @RequestMapping("/login")
-    public String login(@ModelAttribute UserEntity userEntity) {
+        logger.info("username="+ username + ",password=" + password);
+        return "main";
+
+    }
+
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    @ResponseBody
+    public String login(HttpServletResponse httpServletResponse,
+                        @RequestBody UserEntity userEntity) {
 
         logger.info("username=" + userEntity.getUsername() + ",password=" + userEntity.getPassword());
+        httpServletResponse.setContentType("text/plain");
+        httpServletResponse.setCharacterEncoding("UTF-8");
 
         UserEntity user = service.login(userEntity);
 
