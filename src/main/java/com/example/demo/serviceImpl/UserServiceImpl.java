@@ -27,4 +27,16 @@ public class UserServiceImpl implements IUserService {
             return userEntities.get(0);
         }
     }
+
+    @Override
+    public UserEntity register(UserEntity userEntity) {
+
+        try {
+            userMapper.addOne(userEntity);
+            return userEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

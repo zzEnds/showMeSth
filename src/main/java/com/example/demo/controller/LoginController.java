@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
+import static com.example.demo.utils.Constants.*;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-@CrossOrigin(origins = "http://127.0.0.1:18080")
+@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "http://127.0.0.1:18080")
 @RequestMapping("/agent")
 public class LoginController {
 
@@ -38,12 +39,9 @@ public class LoginController {
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public String login(HttpServletResponse httpServletResponse,
-                        @RequestBody UserEntity userEntity) {
+    public String login(@RequestBody UserEntity userEntity) {
 
         logger.info("username=" + userEntity.getUsername() + ",password=" + userEntity.getPassword());
-        httpServletResponse.setContentType("text/plain");
-        httpServletResponse.setCharacterEncoding("UTF-8");
 
         UserEntity user = service.login(userEntity);
 
@@ -52,7 +50,19 @@ public class LoginController {
         } else {
             return "error";
         }
-
     }
 
+    @RequestMapping(path = "/register", method = RequestMethod.POST)
+    @ResponseBody
+    public String register(@RequestBody UserEntity userEntity) {
+
+        logger.info("username=" + userEntity.getUsername() + ",password=" + userEntity.getPassword());
+
+        UserEntity res = service.register(userEntity);
+        if(null != res) {
+            return SUCCESS;
+        } else {
+            return FAILED;
+        }
+    }
 }
